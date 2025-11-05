@@ -1,52 +1,110 @@
-# PyAlias - A Simple CLI Alias Manager for Windows
+# PyAlias
 
-PyAlias is a Command Line Interface (CLI) program built with Typer, designed for easy management of aliases in Windows.
+Fast, persistent command aliases for Windows that work exactly like native commands.
+
+## Features
+
+✓ **Native behavior** - Works in cmd.exe, PowerShell, Git Bash, any terminal  
+✓ **Persistent** - Survives restarts and terminal sessions  
+✓ **Speedy** - Written in C, launches in milliseconds
+✓ **Auto-install** - Adds itself to PATH automatically  
+✓ **Simple** - 200 lines of Python, 200 lines of C  
 
 ## Installation
+```bash
+pip install git+https://github.com/offerrall/PyAlias-Windows-Alias-Manager
+```
 
-- Download the repository with: `git clone https://github.com/offerrall/PyAlias-Windows-Alias-Manager`
-- Put the repository folder in a location of your choice (e.g., `C:\Program Files\`)
-- Cd into the repository folder: `cd PyAlias-Windows-Alias-Manager`
-- Install dependencies with: `pip install -r requirements.txt`
-- Compile alias_launcher.c with gcc: `gcc alias_launcher.c -o alias_launcher.exe`
-- Install the program with: `python pyAlias.py install`
+**Requirements:** 
+- Windows
+- Python 3.10+
+- gcc (MinGW-w64) - [Download here](https://www.mingw-w64.org/)
 
-Install put the program in the PATH, allowing you to run it from any directory.
+On first run, PyAlias automatically adds `~/.pyalias` to your PATH. Restart your terminal after installation.
 
-## Uninstallation
+## Quick Start
+```bash
+# Create aliases
+pyalias new ls "dir /b"
+pyalias new gs "git status"
+pyalias new gp "git push"
+pyalias new dev "cd C:\projects && npm run dev"
 
-- Run the program with: `python pyAlias.py uninstall`
+# Use them
+ls
+gs
+gp origin main
 
-## Commands
+# Manage
+pyalias list
+pyalias read ls
+pyalias delete ls
+```
 
-- `pyalias --help`: Show the program help
-- `pyalias new <alias> <command>`: Create a new alias
-- `pyalias list`: List all aliases
-- `pyalias delete <alias>`: Delete an alias
-- `pyalias update <alias> <command>`: Update an alias
-- `pyalias read <alias>`: Read an alias
-- `pyalias paths`: Get the program paths
-- `pyalias install`: Install the program
-- `pyalias export`: Export all aliases to a .TXT file
-- `pyalias import <file>`: Import aliases from a .TXT file
+## How It Works
 
+**When you create an alias:**
+1. PyAlias copies `launcher.exe` → `~/.pyalias/ls.exe`
+2. Creates `~/.pyalias/ls.txt` containing the command
+
+**When you run the alias:**
+1. Windows finds `ls.exe` in PATH
+2. `ls.exe` reads its own filename: "ls"
+3. Opens `ls.txt` in the same directory
+4. Executes the command with any arguments you passed
+```
+User types:    ls -la
+Executes:      ls.exe → reads ls.txt ("dir /b") → runs "dir /b -la"
+```
+
+## Technical Details
+
+**Launcher architecture:**
+- Static memory allocation (no malloc)
+- 32KB path buffer (handles Windows long paths)
+- 8KB command buffer (practically unlimited)
+- Error handling with specific messages
+
+**Storage:**
+- Aliases stored in `C:\Users\YourName\.pyalias\`
+- Each alias is one `.exe` + one `.txt` file
+- 50 aliases = ~1MB total
 
 ## Examples
-- `pyalias new ls dir /b`: Create a new alias with the name "ls" and the command "dir /b"
-- `pyalias update ls dir /b /s`: Update the alias "ls" with the command "dir /b /s"
-- `pyalias delete ls`: Delete the alias "ls"
+```bash
+# Git shortcuts
+pyalias new gs "git status"
+pyalias new ga "git add ."
+pyalias new gc "git commit -m"
+pyalias new gp "git push"
 
+# Development
+pyalias new dev "npm run dev"
+pyalias new build "npm run build && npm test"
 
+# System
+pyalias new c "cls"
+pyalias new e "exit"
+```
 
-## Functioning
+## Limitations
 
-Creating an alias in PyAlias involves two main steps:
+These are inherent to how subprocesses work, not PyAlias limitations:
 
-1. A .TXT file is created in the `{Program_path}\pyAlias\` folder with the alias name and the assigned command.
-2. A copy of `alias_launcher.exe` is made, renamed to the alias, and is responsible for executing the command.
+- **Can't change directory** - `cd` in a subprocess doesn't affect the parent shell
+- **Can't modify environment** - `set VAR=value` only affects the subprocess
 
-Example:
-- If you create an alias named "ls" with the command "dir", running "ls" in the console executes the `ls.exe`, which reads the command from the `ls.txt` file and executes it.
+For these use cases, use shell-specific solutions (`.bashrc`, PowerShell profiles, etc.)
 
+## Commands
+```bash
+pyalias new <alias> <command>    # Create alias
+pyalias list                     # List all aliases  
+pyalias read <alias>             # Show alias command
+pyalias delete <alias>           # Delete alias
+pyalias -h                       # Help
+```
 
-Using a C executable for `alias_launcher` removes Python from the alias execution process, leading to significantly faster alias invocation.
+## License
+
+MIT
