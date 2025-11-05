@@ -79,6 +79,24 @@ Executes:      ls.exe → reads ls.txt ("dir /b") → runs "dir /b -la"
 - Each alias is one `.exe` + one `.txt` file
 - 50 aliases = ~1MB total
 
+## Why Not Just Use `.bat` Files?
+
+You *can* create aliases using `.bat` files — but they are significantly slower.  
+Every time you run a `.bat`, Windows must launch **cmd.exe**, parse the script, and then execute the command.  
+This overhead adds ~10–20 ms to every invocation.
+
+PyAlias avoids that by using a tiny native `.exe` launcher that runs instantly.
+
+### Benchmark Example
+
+| Alias | Implementation | Avg Execution Time |
+|------|----------------|-------------------|
+| `testls` | `.bat` script | **~14.6 ms** |
+| `ls` | PyAlias native `.exe` | **~4.8 ms** |
+
+**PyAlias is ~3× faster than `.bat` aliases.**
+
+
 ## Limitations
 
 These are inherent to how subprocesses work, not PyAlias limitations:
