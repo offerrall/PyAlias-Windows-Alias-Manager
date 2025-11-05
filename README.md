@@ -6,7 +6,7 @@ Fast, persistent command aliases for Windows that work exactly like native comma
 
 ✓ **Native behavior** - Works in cmd.exe, PowerShell, Git Bash, any terminal  
 ✓ **Persistent** - Survives restarts and terminal sessions  
-✓ **Speedy** - Written in C, launches in milliseconds
+✓ **Speedy** - Written in C, launches in milliseconds  
 ✓ **Auto-install** - Adds itself to PATH automatically  
 ✓ **Simple** - 200 lines of Python, 200 lines of C  
 
