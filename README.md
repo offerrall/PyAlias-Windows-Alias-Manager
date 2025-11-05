@@ -41,6 +41,15 @@ pyalias read ls
 pyalias delete ls
 ```
 
+## Commands
+```bash
+pyalias new <alias> <command>    # Create alias
+pyalias list                     # List all aliases  
+pyalias read <alias>             # Show alias command
+pyalias delete <alias>           # Delete alias
+pyalias -h                       # Help
+```
+
 ## How It Works
 
 **When you create an alias:**
@@ -70,23 +79,6 @@ Executes:      ls.exe → reads ls.txt ("dir /b") → runs "dir /b -la"
 - Each alias is one `.exe` + one `.txt` file
 - 50 aliases = ~1MB total
 
-## Examples
-```bash
-# Git shortcuts
-pyalias new gs "git status"
-pyalias new ga "git add ."
-pyalias new gc "git commit -m"
-pyalias new gp "git push"
-
-# Development
-pyalias new dev "npm run dev"
-pyalias new build "npm run build && npm test"
-
-# System
-pyalias new c "cls"
-pyalias new e "exit"
-```
-
 ## Limitations
 
 These are inherent to how subprocesses work, not PyAlias limitations:
@@ -95,15 +87,6 @@ These are inherent to how subprocesses work, not PyAlias limitations:
 - **Can't modify environment** - `set VAR=value` only affects the subprocess
 
 For these use cases, use shell-specific solutions (`.bashrc`, PowerShell profiles, etc.)
-
-## Commands
-```bash
-pyalias new <alias> <command>    # Create alias
-pyalias list                     # List all aliases  
-pyalias read <alias>             # Show alias command
-pyalias delete <alias>           # Delete alias
-pyalias -h                       # Help
-```
 
 ## License
 
